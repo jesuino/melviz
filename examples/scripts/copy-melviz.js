@@ -5,7 +5,7 @@ const sourceDir = path.join(__dirname, '../../webapp/dist');
 const targetDir = path.join(__dirname, '../dist/melviz-webapp');
 
 // Helper function to recursively copy directory
-function copyRecursive(src, dest, renameMelvizIndex = false) {
+function copyRecursive(src, dest) {
   if (!fs.existsSync(src)) {
     console.error(`Source directory not found: ${src}`);
     console.error('Please build the melviz-webapp first by running: yarn build');

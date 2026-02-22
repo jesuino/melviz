@@ -65,11 +65,20 @@ public interface GlobalDisplayerSettings {
                 }
             }
 
-            // Copy column Settings, but user settings are added last so they should override global settings
-            var newSettings = new ArrayList<ColumnSettings>();
-            newSettings.addAll(globalSettings.getColumnSettingsList());
-            settings.getColumnSettingsList().forEach(newSettings::add);
-            settings.setColumnSettingsList(newSettings);
+            // Copy column Settings, but user settings are added last so they should
+            // override global settings            
+            globalSettings.getColumnSettingsList().forEach(globalClSettings -> {
+                var containsCL = settings.getColumnSettingsList()
+                        .stream()
+                        .map(ColumnSettings::getColumnId)
+                        .filter(s -> s.equals(globalClSettings.getColumnId()))
+                        .findAny()
+                        .isPresent();
+                if (!containsCL) {
+                    settings.getColumnSettingsList().add(globalClSettings.cloneInstance());
+                }
+            });
+            
         });
     }
 }

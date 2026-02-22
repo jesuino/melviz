@@ -4,10 +4,11 @@
   "description": "Melviz Dashboard Examples Gallery",
   "private": true,
   "scripts": {
+    "clean": "rimraf dist",
     "generate-samples": "node scripts/generate-samples.js",
     "copy-melviz": "node scripts/copy-melviz.js",
     "copy-dashboards": "node scripts/copy-dashboards.js",
-    "build": "npm run generate-samples && npm run copy-melviz && npm run copy-dashboards",
+    "build": "yarn clean && yarn generate-samples && yarn copy-melviz && yarn copy-dashboards",
     "serve": "npx http-server dist -c-1 -p 8080 -o",
     "dev": "node scripts/dev-server.js"
   },
@@ -24,6 +25,7 @@
   "devDependencies": {
     "browser-sync": "^2.29.3",
     "chokidar": "^3.5.3",
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "rimraf": "^6.1.3"
   }
 }

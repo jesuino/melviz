@@ -1,9 +1,13 @@
 global:
-    displayer:        
+    displayer:
+        chart:
+            height: 200
         columns:
             # this will be applied to all columns with the same ID
             - id: Column 0
               expression: value + " - Global Change"
+        lookup:
+            uuid: test
 datasets:
     - uuid: test
       content: "[ 'ABC', 1]"
@@ -11,15 +15,9 @@ datasets:
 pages:
     - components:
           - displayer:
-                lookup:
-                    uuid: test
           - displayer:
                 type: barchart
-                lookup:
-                    uuid: test
           - displayer:
                 columns:
                     - id: Column 0
                       expression: value + " - Local Change"
-                lookup:
-                    uuid: test

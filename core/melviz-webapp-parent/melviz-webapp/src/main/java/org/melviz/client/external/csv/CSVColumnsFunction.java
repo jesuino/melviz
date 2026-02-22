@@ -39,8 +39,14 @@ public class CSVColumnsFunction implements Function<String, List<DataColumnDef>>
 
         var columnsLine = t.split("\n")[0];
         var columnsNames = columnsLine.split(",");
-        return columnsLine.trim().isEmpty() ? Collections.emptyList() :
-                Arrays.stream(columnsNames)
+        return columnsLine.trim().isEmpty() ? Collections.emptyList()
+                : Arrays.stream(columnsNames)
+                        .map(s -> {
+                            if (s.matches("\".*\"") && s.length() > 1) {
+                                return s.substring(1, s.length() - 1);
+                            }
+                            return s;
+                        })
                         .map(cl -> new DataColumnDef(cl, ColumnType.LABEL))
                         .collect(Collectors.toList());
     }

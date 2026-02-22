@@ -28,6 +28,12 @@ public class CSVColumnsFunctionTest {
     private static final String EMPTY_HEADERS = "\n1,2,3";
 
     private static final String EMPTY_CONTENT = " ";
+    private static final String QUOTED_HEADERS = """
+            "A","B","C"
+            "X","10","2"
+            "Y","42","22"
+            "Z","10","56"
+            """;;
 
     private CSVColumnsFunction columnsFunction;
 
@@ -49,13 +55,22 @@ public class CSVColumnsFunctionTest {
     @Test
     public void testEmptyHeaders() {
         var columns = columnsFunction.apply(EMPTY_HEADERS);
-        assertEquals(0, columns.size());        
+        assertEquals(0, columns.size());
     }
 
     @Test
     public void testEmptyContent() {
         var columns = columnsFunction.apply(EMPTY_CONTENT);
         assertEquals(0, columns.size());
+    }
+
+    @Test
+    public void testQuotedHeaders() {
+        var columns = columnsFunction.apply(QUOTED_HEADERS);
+        assertEquals(3, columns.size());
+        assertEquals("A", columns.get(0).getId());
+        assertEquals("B", columns.get(1).getId());
+        assertEquals("C", columns.get(2).getId());
     }
 
 }

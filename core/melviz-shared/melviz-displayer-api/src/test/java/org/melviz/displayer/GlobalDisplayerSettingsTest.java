@@ -177,9 +177,33 @@ public class GlobalDisplayerSettingsTest {
         globalDisplayerSettings.apply(settings);
 
         assertEquals(2, settings.getColumnSettingsList().size());
-        assertEquals(globalSettingsColumnId, settings.getColumnSettingsList().get(0).getColumnId());
-        assertEquals(userSettingsColumnId, settings.getColumnSettingsList().get(1).getColumnId());
+        assertEquals(userSettingsColumnId, settings.getColumnSettingsList().get(0).getColumnId());
+        assertEquals(globalSettingsColumnId, settings.getColumnSettingsList().get(1).getColumnId());
+    }
 
+    @Test
+    public void testGlobalColumnsSettingsOverrideByLocal() {
+        var globalSettings = new DisplayerSettings();
+        var settings = new DisplayerSettings();
+        var testColumnId = "test_column_setting";
+
+        var testColumnSetting = new ColumnSettings(testColumnId);
+        String userColumnName = "User Column Name";
+        testColumnSetting.setColumnName(userColumnName);
+
+        var globalColumnSetting = new ColumnSettings(testColumnId);
+        globalColumnSetting.setColumnName("Global Column Name");
+
+        settings.getColumnSettingsList().add(testColumnSetting);
+        globalSettings.getColumnSettingsList().add(globalColumnSetting);
+
+        globalDisplayerSettings.setDisplayerSettings(globalSettings);
+        globalDisplayerSettings.apply(settings);
+
+        assertEquals(1, settings.getColumnSettingsList().size());
+        assertEquals(testColumnId, settings.getColumnSettingsList().get(0).getColumnId());
+        // USer setting should override global setting
+        assertEquals(userColumnName, settings.getColumnSettingsList().get(0).getColumnName());
     }
 
 }
