@@ -121,7 +121,7 @@ public class DataSetLookup {
     }
 
     public List<DataSetOp> getOperationList() {
-        return operationList;
+        return operationList == null ? List.of() : operationList;
     }
 
     public Object getMetadata(String key) {

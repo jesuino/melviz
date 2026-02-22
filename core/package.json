@@ -17,7 +17,7 @@
     "src"
   ],
   "scripts": {
-    "build": "mvn clean install -DskipTests",
+    "build": "mvn clean install -DskipTests  -Psources",
     "build:prod": "mvn clean install -Dfull",
     "test": "mvn verify"
   },

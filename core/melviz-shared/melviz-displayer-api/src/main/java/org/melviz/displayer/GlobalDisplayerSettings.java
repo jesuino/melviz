@@ -15,10 +15,16 @@
  */
 package org.melviz.displayer;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.melviz.dataset.DataSetLookup;
 import org.melviz.dataset.DataSetOp;
+import org.melviz.dataset.DataSetOpType;
 
 public interface GlobalDisplayerSettings {
 
@@ -57,16 +63,10 @@ public interface GlobalDisplayerSettings {
                     if (lookup.getNumberOfRows() == -1) {
                         lookup.setNumberOfRows(globalLookup.getNumberOfRows());
                     }
-                    // Operations can't be overriden, but the global operation should come first
-                    var globalOperations = new ArrayList<DataSetOp>(globalLookup.getOperationList());
-                    lookup.getOperationList().forEach(globalOperations::add);
-                    lookup.getOperationList().clear();
-                    globalOperations.forEach(lookup::addOperation);
+                    copyOperations(globalLookup, lookup);
                 }
             }
 
-            // Copy column Settings, but user settings are added last so they should
-            // override global settings            
             globalSettings.getColumnSettingsList().forEach(globalClSettings -> {
                 var containsCL = settings.getColumnSettingsList()
                         .stream()
@@ -78,7 +78,38 @@ public interface GlobalDisplayerSettings {
                     settings.getColumnSettingsList().add(globalClSettings.cloneInstance());
                 }
             });
-            
+
         });
+    }
+
+    default void copyOperations(DataSetLookup globalLookup, DataSetLookup lookup) {
+        // Operations can't be overriden, but the global operation should come first
+        // the order (0..N) FILTER > (0..N) GROUP > (0..1) SORT should be respected
+
+        var globalOperationsMap = collectOperations(globalLookup);
+        var localOperationsMap = collectOperations(lookup);
+
+        var finalOperations = new ArrayList<DataSetOp>();
+
+        List.of(DataSetOpType.FILTER,
+                DataSetOpType.GROUP)
+                .forEach(type -> {
+                    globalOperationsMap.getOrDefault(type, List.of())
+                            .forEach(finalOperations::add);
+                    localOperationsMap.getOrDefault(type, List.of())
+                            .forEach(finalOperations::add);
+                });
+        localOperationsMap.getOrDefault(DataSetOpType.SORT,
+                globalOperationsMap.getOrDefault(DataSetOpType.SORT,
+                        List.of()))
+                .forEach(finalOperations::add);
+        lookup.getOperationList().clear();
+        lookup.getOperationList().addAll(finalOperations);
+    }
+
+    default Map<DataSetOpType, List<DataSetOp>> collectOperations(DataSetLookup lookup) {
+        return lookup.getOperationList()
+                .stream()
+                .collect(groupingBy(v -> v.getType()));
     }
 }
