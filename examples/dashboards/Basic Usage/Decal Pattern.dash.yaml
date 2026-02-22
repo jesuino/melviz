@@ -19,10 +19,6 @@ datasets:
         type: NUMBER
 pages:
   - components:
-      - html: Welcome to Melviz!
-        properties:
-          font-size: xx-large
-          margin-bottom: 30px
       - displayer:
           type: BARCHART
           extraConfiguration: >-

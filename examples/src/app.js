@@ -13,6 +13,8 @@ const dashboardCount = document.getElementById('dashboard-count');
 const statsContainer = document.getElementById('stats');
 const openNewWindowBtn = document.getElementById('open-new-window');
 const reloadDashboardBtn = document.getElementById('reload-dashboard');
+const sidebar = document.getElementById('sidebar');
+const sidebarToggleBtn = document.getElementById('sidebar-toggle');
 
 // Load samples.json
 async function loadSamples() {
@@ -32,6 +34,7 @@ function initializeApp() {
     renderCategories();
     renderStats();
     setupEventListeners();
+    loadSidebarState();
 
     // Check if there's a dashboard in the URL hash
     const hash = window.location.hash.slice(1);
@@ -146,8 +149,28 @@ function loadDashboardInIframe(dashboardPath) {
     dashboardIframe.src = "melviz-webapp?import=" + encodeURI(dashboardUrl);
 }
 
+// Load and apply sidebar collapsed state from localStorage
+function loadSidebarState() {
+    const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+    if (isCollapsed) {
+        sidebar.classList.add('collapsed');
+        sidebarToggleBtn.classList.add('collapsed');
+    }
+}
+
+// Toggle sidebar collapsed state
+function toggleSidebar() {
+    sidebar.classList.toggle('collapsed');
+    sidebarToggleBtn.classList.toggle('collapsed');
+    const isCollapsed = sidebar.classList.contains('collapsed');
+    localStorage.setItem('sidebar-collapsed', isCollapsed);
+}
+
 // Setup event listeners
 function setupEventListeners() {
+    // Sidebar toggle
+    sidebarToggleBtn.addEventListener('click', toggleSidebar);
+
     // Search functionality
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
