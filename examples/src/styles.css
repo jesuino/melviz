@@ -188,6 +188,7 @@ body {
     justify-content: center;
     padding: 40px;
     text-align: center;
+    min-width: 0;
 }
 
 .welcome h1 {
@@ -238,6 +239,24 @@ body {
     display: flex;
     flex-direction: column;
     background: white;
+    min-width: 0;
+    min-height: 0;
+}
+
+.dashboard-content-with-code {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.dashboard-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
 }
 
 .dashboard-header {
@@ -278,8 +297,9 @@ body {
 
 #dashboard-iframe {
     flex: 1;
-    width: 100%;
     border: none;
+    min-width: 0;
+    min-height: 0;
 }
 
 /* Scrollbar styling */
@@ -298,4 +318,58 @@ body {
 
 .categories::-webkit-scrollbar-thumb:hover {
     background: #999;
+}
+
+/* Code sidebar styles */
+.code-sidebar {
+    flex: 0 0 35%;
+    background: #1e1e1e;
+    border-left: 1px solid #333;
+    transition: flex-basis 0.3s ease;
+    overflow-y: auto;
+    overflow-x: auto;
+    min-height: 0;
+}
+
+.code-sidebar.collapsed {
+    flex-basis: 0;
+    overflow: hidden;
+    border-left: none;
+}
+
+.code-content {
+    padding: 0;
+}
+
+.code-content pre {
+    margin: 0;
+    padding: 5px;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.code-content code {
+    display: block;
+    white-space: pre;
+}
+
+/* Code sidebar scrollbar styling */
+.code-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.code-sidebar::-webkit-scrollbar-track {
+    background: #252526;
+}
+
+.code-sidebar::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.code-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #777;
 }

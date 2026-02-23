@@ -15,6 +15,9 @@ const openNewWindowBtn = document.getElementById('open-new-window');
 const reloadDashboardBtn = document.getElementById('reload-dashboard');
 const sidebar = document.getElementById('sidebar');
 const sidebarToggleBtn = document.getElementById('sidebar-toggle');
+const codeSidebar = document.getElementById('code-sidebar');
+const codeToggleBtn = document.getElementById('code-toggle');
+const sourceCodeElement = document.getElementById('source-code');
 
 // Load samples.json
 async function loadSamples() {
@@ -34,7 +37,6 @@ function initializeApp() {
     renderCategories();
     renderStats();
     setupEventListeners();
-    loadSidebarState();
 
     // Check if there's a dashboard in the URL hash
     const hash = window.location.hash.slice(1);
@@ -127,6 +129,9 @@ function loadDashboard(dashboard) {
 
     // Load dashboard in iframe
     loadDashboardInIframe(dashboard.path);
+
+    // Load dashboard source code
+    loadDashboardSourceCode(dashboard.path);
 }
 
 // Load dashboard from URL hash
@@ -145,31 +150,46 @@ function loadDashboardFromHash(category, dashboardPath) {
 
 // Load dashboard in iframe using Melviz
 function loadDashboardInIframe(dashboardPath) {
-    const dashboardUrl = `${window.location.origin}/dashboards/${dashboardPath}`;   
+    const dashboardUrl = `${window.location.origin}/dashboards/${dashboardPath}`;
     dashboardIframe.src = "melviz-webapp?import=" + encodeURI(dashboardUrl);
 }
 
-// Load and apply sidebar collapsed state from localStorage
-function loadSidebarState() {
-    const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
-    if (isCollapsed) {
-        sidebar.classList.add('collapsed');
-        sidebarToggleBtn.classList.add('collapsed');
+// Load and display dashboard source code
+async function loadDashboardSourceCode(dashboardPath) {
+    try {
+        const response = await fetch(`dashboards/${dashboardPath}`);
+        const sourceCode = await response.text();
+        sourceCodeElement.textContent = sourceCode;
+
+        // Show the code toggle button
+        codeToggleBtn.style.display = 'flex';
+    } catch (error) {
+        console.error('Error loading dashboard source:', error);
+        sourceCodeElement.textContent = 'Error loading source code';
     }
 }
+
 
 // Toggle sidebar collapsed state
 function toggleSidebar() {
     sidebar.classList.toggle('collapsed');
     sidebarToggleBtn.classList.toggle('collapsed');
-    const isCollapsed = sidebar.classList.contains('collapsed');
-    localStorage.setItem('sidebar-collapsed', isCollapsed);
+}
+
+
+// Toggle code sidebar collapsed state
+function toggleCodeSidebar() {
+    codeSidebar.classList.toggle('collapsed');
+    codeToggleBtn.classList.toggle('collapsed');
 }
 
 // Setup event listeners
 function setupEventListeners() {
     // Sidebar toggle
     sidebarToggleBtn.addEventListener('click', toggleSidebar);
+
+    // Code sidebar toggle
+    codeToggleBtn.addEventListener('click', toggleCodeSidebar);
 
     // Search functionality
     searchInput.addEventListener('input', (e) => {
@@ -221,6 +241,8 @@ function setupEventListeners() {
         } else {
             welcomeScreen.style.display = 'flex';
             dashboardContainer.style.display = 'none';
+            codeToggleBtn.style.display = 'none';
+            sourceCodeElement.textContent = 'Select a dashboard to view its source code';
             document.querySelectorAll('.dashboard-item').forEach(item => {
                 item.classList.remove('active');
             });
