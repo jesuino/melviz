@@ -106,7 +106,7 @@ public class GlobalDisplayerSettingsTest {
         userLookup.setNumberOfRows(userNumberOfRows);
         settings.setDataSetLookup(userLookup);
 
-        var globalLookup = new DataSetLookup("GLOBAL UUID", new DataSetSort());
+        var globalLookup = new DataSetLookup("GLOBAL UUID", new DataSetFilter());
         globalLookup.setRowOffset(5);
         globalLookup.setNumberOfRows(20);
         globalSettings.setDataSetLookup(globalLookup);
@@ -161,8 +161,8 @@ public class GlobalDisplayerSettingsTest {
         globalDisplayerSettings.apply(settings);
 
         assertEquals(globalLookup.getDataSetUUID(), settings.getDataSetLookup().getDataSetUUID());
-        assertEquals(DataSetOpType.SORT, settings.getDataSetLookup().getOperation(0).getType());
-        assertEquals(DataSetOpType.FILTER, settings.getDataSetLookup().getOperation(1).getType());
+        assertEquals(DataSetOpType.FILTER, settings.getDataSetLookup().getOperation(0).getType());
+        assertEquals(DataSetOpType.SORT, settings.getDataSetLookup().getOperation(1).getType());
     }
 
     @Test
